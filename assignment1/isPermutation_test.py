@@ -1,6 +1,6 @@
 """Tests for isPermutation()."""
 
-from isPermutation import *
+from isPermutation import isPermutation
 import unittest
 
 class isPermutationTest(unittest.TestCase):

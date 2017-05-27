@@ -12,11 +12,11 @@ class Node:
     def __str__(self):
         return str(self.key)
 
-def kthInLinkedList(linkedList, k):
+def kthToLastInLinkedList(linkedList, k):
     """Function that finds the kth to last element of a singly linked list.
 
     Args:
-        linledList: a Node, the first element in the linked list;
+        linkedList: a Node, the first element in the linked list;
         k:          an integer that defines an element that we should return.
 
     Return:
