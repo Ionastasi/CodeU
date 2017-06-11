@@ -75,16 +75,19 @@ class BinaryTreeTest(unittest.TestCase):
 
     def testDifferentInsertions(self):
         tree = BinaryTree()
-        self.assertTrue(tree.insert(0))
+        tree.insert(0)
         self.assertEqual(0, tree.getRoot().key)
-        self.assertFalse(tree.insert(0))
-        self.assertTrue(tree.insert(1))
-        self.assertTrue(tree.insert(5, 0))
-        self.assertTrue(tree.insert(6, 0))
-        self.assertTrue(tree.insert(7, 8))
+        with self.assertRaises(ValueError):
+            tree.insert(0)
+        tree.insert(1)
+        tree.insert(5, 0)
+        with self.assertRaises(ValueError):
+            tree.insert(6, 0)
+        with self.assertRaises(ValueError):
+            tree.insert(7, 8)
         self.assertFalse(tree.find(8))
-        self.assertTrue(tree.find(7))
-        self.assertEqual(5, tree.getSize())
+        self.assertFalse(tree.find(7))
+        self.assertEqual(3, tree.getSize())
 
 if __name__ == '__main__':
     unittest.main()

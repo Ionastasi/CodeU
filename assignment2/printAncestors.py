@@ -31,9 +31,9 @@ def findAncestors(tree, key):
         if (left is not None and left.key == key or
            right is not None and right.key == key):
             return [cur.key]  # this is the parent of the required key
-        childs = _findAncestors(left) + _findAncestors(right)
-        if childs:
-            return childs + [cur.key]
+        children = _findAncestors(left) or _findAncestors(right)
+        if children:
+            return children + [cur.key]
         return []
 
     return _findAncestors(tree.getRoot())

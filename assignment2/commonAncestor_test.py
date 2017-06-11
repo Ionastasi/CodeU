@@ -15,7 +15,7 @@ class CommonAncestorTest(unittest.TestCase):
         self.bst.insert(3, 9, True)
         self.bst.insert(1, 3, True)
         self.bst.insert(5, 3, False)
-        if self.bst.getSize() != 8:
+        if self.assertEqual(self.bst.getSize(), 8):
             print("Some problems with Binary Search Tree.")
             raise
 

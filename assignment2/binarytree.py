@@ -1,4 +1,3 @@
-from random import randint
 from node import *
 
 class BinaryTree:
@@ -53,92 +52,92 @@ class BinaryTree:
         Args:
             key:               an integer, new key that should be inserted;
             parent (optional): an integer, key of some node in the tree, that
-                               should be a parent of a new node, if it possible.
-                               `None` by default, that means that any node in
-                               the tree could be a parent of a new one;
+                               should be a parent of a new node. `None` by
+                               default, that means that any node in the tree
+                               could be a parent of a new one;
             isLeft (optional): a bool, True if a new node should be a left child
-                               (if it possible) and False if it should be a
-                               right child (if it possible). `None` by default,
-                               that means it doesn't matter which child would be
-                               a new node. If `parent = None` then `isLeft`
-                               won't be taken into account.
+                               and False if it should be a right child. `None`
+                               by default, that means it doesn't matter which
+                               child would be a new node. If `parent = None`
+                               then `isLeft` should be `None`, otherwise it
+                               raised an error.
 
         Return:
-            a bool, True if the new key was successfully inserted in the tree
-            (even if conditions `parent` and `isLeft` are violated), and False
-            otherwise.
+            None
         """
         if self.root is None:
             self.root = Node(key)
             self.size += 1
-            return True
-        else:
-            if self.find(key):
-                return False  # duplicated keys are not allowed
-            if parent is None or not self.find(parent):
-                parent = isLeft = None
-            # check if it possible to insert a new node to this parent
-            sucsees = self._add(key, self.root, parent, isLeft)
-            if not sucsees:
-                # just insert it somewhere (always possible)
-                self._add(key, self.root)
-            self.size += 1
-            return True
+            return
 
-    def _add(self, key, cur, parent = None, isLeft = None):
+        if self.find(key):
+            raise ValueError("key is a duplicate, which not allowed")
+
+        if parent is None:
+            if isLeft is not None:
+                raise ValueError("you should specify a parent if you want" +
+                                 "to insert new node as left/right" +
+                                 "child only")
+            self._insert_internal(key, self.root)
+        else:
+            if not self.find(parent):
+                raise ValueError("there is no node", parent, "in the tree")
+            success = self._insert_internal(key, self.root, parent, isLeft)
+            if not success:
+                raise ValueError("impossible to insert a new node under node",
+                                 parent)
+        self.size += 1
+
+    def _insert_internal(self, key, cur, parent = None, isLeft = None):
         """Internal iplementation of `insert(...)`.
 
         Args:
             key:               an integer, new key that should be inserted;
             cur:               a Node, current node in the tree that could be a
                                parent of a new one;
-            parent (optional): an integer, key of some node in the tree, that
-                               should be a parent of a new node, if it possible.
-                               `None` by default, that means that any node in
-                               the tree could be a parent of a new one;
-            isLeft (optional): a bool, True if a new node should be a left child
-                               (if it possible) and False if it should be a
-                               right child (if it possible). `None` by default,
-                               that means it doesn't matter which child would be
-                               a new node.
+            parent (optional): see insert(...);
+            isLeft (optional): see insert(...).
 
         Return:
-            a bool, True if the new key was successfully adde to the current
-            node or some of its childs, and False otherwise
+            a bool, True if the new key was successfully added to the current
+            node or some of its children, and False otherwise.
         """
         if cur is None:
             return False
+
         if parent is not None:
             if cur.key != parent:
-                return (self._add(key, cur.left, parent, isLeft) or
-                        self._add(key, cur.right, parent, isLeft))
-            if cur.right is not None and cur.left is not None:
-                return False  # parent node doesn't have any free childs
-            if cur.right is not None:
-                cur.left = Node(key)
-            elif cur.left is not None:
-                cur.right = Node(key)
-            else:
-                # randomly choose the child, if it doesn't specified.
-                if isLeft is None:
-                    isLeft = randint(0, 1)
-                if isLeft:
-                    cur.left = Node(key)
-                else:
-                    cur.right = Node(key)
+                return (self._insert_internal(key, cur.left, parent, isLeft) or
+                        self._insert_internal(key, cur.right, parent, isLeft))
+            return self._insert_child(key, cur, isLeft)
+
+        if self._insert_child(key, cur):
             return True
-        else:
-            if cur.left is None and cur.right is None:
-                if randint(0, 1):  # randomly choose the child
-                    cur.left = Node(key)
-                else:
-                    cur.right = Node(key)
-                return True
-            elif cur.left is None:
+        return (self._insert_internal(key, cur.right) or
+                self._insert_internal(key, cur.left))
+
+    def _insert_child(self, key, cur, isLeft = None):
+        """Helper function for _insert_internal(...).
+
+        Args: the same as in _insert_internal(...).
+
+        Return:
+            a bool, True if the new key was successfully added to the current
+            node, and False otherwise.
+        """
+        if isLeft is not None:
+            if (isLeft and cur.left is not None or
+                                     not isLeft and cur.right is not None):
+                raise ValueError("This child doesn't available under this parent")
+            if isLeft:
                 cur.left = Node(key)
-                return True
+            else:
+                cur.right = Node(key)
+        else:
+            if cur.left is None:
+                cur.left = Node(key)
             elif cur.right is None:
                 cur.right = Node(key)
-                return True
-            return (self._add(key, cur.right) or
-                    self._add(key, cur.left))
+            else:
+                return False
+        return True
