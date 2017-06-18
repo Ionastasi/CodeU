@@ -1,5 +1,4 @@
 from dictionary import Dictionary
-from collections import deque
 
 
 class GridWord:
@@ -26,7 +25,7 @@ class GridWord:
     def getWord(self):
         return self._word
 
-    def newPosition(self, i, j, symbol):
+    def appendPosition(self, i, j, symbol):
         self._last_position = (i, j)
         self._visited_positions.add(self._last_position)
         self._word += symbol
@@ -54,27 +53,26 @@ def wordSearch(rows, cols, grid, dictionary):
     """
 
     # find all possible chars in the grid, that can be a prefix of some word
-    current_words = deque()
+    current_words = list()
     for i in range(rows):
         for j in range(cols):
             if dictionary.isPrefix(grid[i][j]):
                 tmp = GridWord()
-                tmp.newPosition(i, j, grid[i][j])
+                tmp.appendPosition(i, j, grid[i][j])
                 current_words.append(tmp)
 
     found = set()
 
     # bfs
-    flag ='ok'
     while current_words:
-        gridWord = current_words.popleft()
+        gridWord = current_words.pop()
         word = gridWord.getWord()
         if dictionary.isWord(word):
             found.add(word)
         i, j = gridWord.getLastPosition()
         # iterate through all adjacent cells (i+di, j+dj)
-        for di in range(-1, 2):
-            for dj in range(-1, 2):
+        for di in [-1, 0, 1]:
+            for dj in [-1, 0, 1]:
                 ii, jj = i+di, j+dj
                 if (ii in range(rows) and jj in range(cols)
                                     and not gridWord.containsPosition(ii, jj)):
@@ -82,6 +80,6 @@ def wordSearch(rows, cols, grid, dictionary):
                     if not dictionary.isPrefix(word + symbol):
                         continue
                     tmp = gridWord.copy()
-                    tmp.newPosition(ii, jj, symbol)
+                    tmp.appendPosition(ii, jj, symbol)
                     current_words.append(tmp)
     return found
