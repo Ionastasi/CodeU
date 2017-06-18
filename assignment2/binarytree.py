@@ -111,10 +111,9 @@ class BinaryTree:
                         self._insert_internal(key, cur.right, parent, isLeft))
             return self._insert_child(key, cur, isLeft)
 
-        if self._insert_child(key, cur):
-            return True
-        return (self._insert_internal(key, cur.right) or
-                self._insert_internal(key, cur.left))
+        return ((self._insert_child(key, cur)) or
+                (self._insert_internal(key, cur.right)) or
+                (self._insert_internal(key, cur.left)))
 
     def _insert_child(self, key, cur, isLeft = None):
         """Helper function for _insert_internal(...).
@@ -126,8 +125,8 @@ class BinaryTree:
             node, and False otherwise.
         """
         if isLeft is not None:
-            if (isLeft and cur.left is not None or
-                                     not isLeft and cur.right is not None):
+            if ((isLeft and cur.left is not None) or
+                                     (not isLeft and cur.right is not None)):
                 raise ValueError("This child doesn't available under this parent")
             if isLeft:
                 cur.left = Node(key)

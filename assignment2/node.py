@@ -12,4 +12,4 @@ class Node:
         self.right = right
 
     def __str__(self):
-        return self.key.__str__()
+        return str(self.key)
