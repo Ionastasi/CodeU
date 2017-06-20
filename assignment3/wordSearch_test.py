@@ -41,13 +41,15 @@ class CommonAncestorTest(unittest.TestCase):
         self.assertEqual(wordSearch(len(grid3), len(grid3[0]),
                                     grid3, dictionary), {'i'})
 
-    def testEmptyInput(self):
-        grid = [['A', 'A', 'R'], ['T', 'C', 'D']]
+    def testEmptyGrid(self):
         dictionary = Dictionary()
         dictionary.addWords(['CAR', 'CARD', 'CART', 'CAT'])
+        self.assertEqual(wordSearch(0, 0, [], dictionary), set())
+
+    def testEmptyDict(self):
+        grid = [['A', 'A', 'R'], ['T', 'C', 'D']]
         self.assertEqual(wordSearch(len(grid), len(grid[0]), grid,
                                     Dictionary()), set())
-        self.assertEqual(wordSearch(0, 0, [], dictionary), set())
 
 if __name__ == '__main__':
     unittest.main()

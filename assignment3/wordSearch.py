@@ -11,7 +11,7 @@ class GridWord:
                            in this path;
         _word:             a string, the word that corresponds to the path.
     """
-    def __init__(self, last = None, visited = None, word = ''):
+    def __init__(self, last=None, visited=None, word=''):
         self._last_position = last
         if visited is None:
             self._visited_positions = set()
@@ -43,14 +43,16 @@ def wordSearch(rows, cols, grid, dictionary):
     dictionary that can be formed in the grid. Not case-sensitive.
 
     Args:
-        rows: an int, number of rows in the grid;
-        cols: an int, number of columns in the grid;
         grid: 2-dimensional array of chars, a grid of letters;
         dictionary: a Dictionary, that contains possible words.
 
     Returns:
         set of all words found.
     """
+
+    rows = len(grid)
+    if rows:
+        cols = len(grid[0])
 
     # find all possible chars in the grid, that can be a prefix of some word
     current_words = list()
@@ -75,7 +77,7 @@ def wordSearch(rows, cols, grid, dictionary):
             for dj in [-1, 0, 1]:
                 ii, jj = i+di, j+dj
                 if (ii in range(rows) and jj in range(cols)
-                                    and not gridWord.containsPosition(ii, jj)):
+                        and not gridWord.containsPosition(ii, jj)):
                     symbol = grid[ii][jj]
                     if not dictionary.isPrefix(word + symbol):
                         continue
