@@ -26,6 +26,6 @@ def countingIslands(islandsMap):
             # iterate through adjacent cells that we already processed
             for dx, dy in [[-1, 0], [0, -1]]:
                 xx, yy = x + dx, y + dy
-                if 0 <= xx <= rows and 0 <= yy <= cols and islandsMap[xx][yy]:
+                if xx >= 0 and yy >= 0 and islandsMap[xx][yy]:
                     islands.unionSets(counter, islandsMap[xx][yy])
     return islands.getSetAmount()
