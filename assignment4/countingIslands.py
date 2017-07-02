@@ -12,7 +12,6 @@ def countingIslands(islandsMap):
         an integer, the number of islands.
     """
     islands = DisjointSet()
-    counter = 0
     rows = len(islandsMap)
     if rows:
         cols = len(islandsMap[0])
@@ -20,12 +19,11 @@ def countingIslands(islandsMap):
         for y in range(cols):
             if not islandsMap[x][y]:
                 continue
-            counter += 1
+            counter = islands.makeSet()
             islandsMap[x][y] = counter
-            islands.makeSet(counter)
             # iterate through adjacent cells that we already processed
             for dx, dy in [[-1, 0], [0, -1]]:
-                xx, yy = x + dx, y + dy
-                if xx >= 0 and yy >= 0 and islandsMap[xx][yy]:
-                    islands.unionSets(counter, islandsMap[xx][yy])
-    return islands.getSetAmount()
+                new_x, new_y = x + dx, y + dy
+                if new_x >= 0 and new_y >= 0 and islandsMap[new_x][new_y]:
+                    islands.unionSets(counter, islandsMap[new_x][new_y])
+    return islands.getSetCount()
