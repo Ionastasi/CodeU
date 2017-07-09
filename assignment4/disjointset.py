@@ -1,49 +1,60 @@
 class DisjointSet:
-    """Implementation of a Disjoint Set."""
+    """This class is used to compute disjoint sets by merging elements.
 
+       Elements are called set. You should create a new set using the
+       makeSet() method, which returns the identifier of the new set.
+
+       You can join two sets by calling the unionSets() method with two set
+       identifiers and they will be merged into a single new set.
+
+       Given a set identifier, you can find the canonical identifier for
+       that set by calling findSet(). Two sets that have been merged will
+       have the same canonical identifier. Note that the canonical
+       identifier of a set might change every time unionSets() is called.
+    """
     def __init__(self):
-        """
-        Fields:
-            parents: link to the parent (header member) of the set
-            rank:    helps to determine how to union two sets
-                     (heuristic to improve time complexity of unionSet)
-        As well as I want to use 1-based numeration of set, `parent` and `rank`
-        contain first extra element.
-        """
-        self.parent = [0]
-        self.rank = [0]
-        self.setCount = 0
+        self.__parent = [0]
+        self.__rank = [0]
+        self.__setCount = 0
 
     def getSetCount(self):
-        return self.setCount
+        return self.__setCount
 
     def makeSet(self):
-        """Create new set and return its num."""
-        newSetNum = len(self.parent)
-        self.parent.append(newSetNum)
-        self.rank.append(0)
-        self.setCount += 1
+        """Creates a new set.
+
+        Returns:
+          an integer, the identifier of the newly created set.
+        """
+        newSetNum = len(self.__parent)
+        self.__parent.append(newSetNum)
+        self.__rank.append(0)
+        self.__setCount += 1
         return newSetNum
 
     def findSet(self, v):
-        """Return parent (header member) of the set with num `v`."""
-        if v == self.parent[v]:
+        """Given a set identifier v, find the canonical identifier for that set.
+
+        Returns:
+            the canonical identifier.
+        """
+        if v == self.__parent[v]:
             return v
         # heuristic to improve time complexity:
-        self.parent[v] = self.findSet(self.parent[v])
-        return self.parent[v]
+        self.__parent[v] = self.findSet(self.__parent[v])
+        return self.__parent[v]
 
     def unionSets(self, a, b):
-        """Unioin two sets with nums `a` and `b`."""
+        """Join two sets by their set identifiers into a single new set."""
         a = self.findSet(a)
         b = self.findSet(b)
         if a == b:
             return
-        self.setCount -= 1
+        self.__setCount -= 1
         # now we need to connect one set to the other. heuristic `rank` helps us
         # to determine which set should be connected
-        if self.rank[a] < self.rank[b]:
+        if self.__rank[a] < self.__rank[b]:
             a, b = b, a
-        self.parent[b] = a
-        if self.rank[a] == self.rank[b]:
-            self.rank[a] += 1
+        self.__parent[b] = a
+        if self.__rank[a] == self.__rank[b]:
+            self.__rank[a] += 1
