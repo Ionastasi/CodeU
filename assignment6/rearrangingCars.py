@@ -3,15 +3,15 @@ class Move:
     Class that stores data about movement between two slots.
     """
     def __init__(self, _from, _to):
-        self.__from = _from
-        self.__to = _to
+        self._from = _from
+        self._to = _to
 
     def __eq__(self, other):
-        return self.__from == other.__from and self.__to == other.__to
+        return self._from == other._from and self._to == other._to
 
     def __str__(self):
-        return "Move the car from slot {} to splot {}.".format(self.__from,
-                                                                self.__to)
+        return "Move the car from slot {} to splot {}.".format(self._from,
+                                                                self._to)
 
 
 def rearrangingCars(initalState, desiredState, toPrint = False):
@@ -75,10 +75,6 @@ def rearrangingCars(initalState, desiredState, toPrint = False):
         car2slot[car] = zeroPos
         car2slot[0] = carPos
         moves.append(Move(carPos, zeroPos))
-
-    # in case our algorithm is wrong
-    if currentState != desiredState:
-        raise Exception("Wrong answer!")
 
     if toPrint:
         for m in moves:
