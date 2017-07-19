@@ -1,33 +1,88 @@
-def rearrangingCars(startPositions, endPositions):
-    slotNums = len(startPositions)
+class Move:
+    """
+    Class that stores data about movement between two slots.
+    """
+    def __init__(self, _from, _to):
+        self.__from = _from
+        self.__to = _to
+
+    def __eq__(self, other):
+        return self.__from == other.__from and self.__to == other.__to
+
+    def __str__(self):
+        return "Move the car from slot {} to splot {}.".format(self.__from,
+                                                                self.__to)
+
+
+def rearrangingCars(initalState, desiredState, toPrint = False):
+    """
+    There is a parking lot with N spaces and N-1 cars in it. The parking lot is
+    described by an array of numbers, where numbers from 1 to N-1 mean cars, and
+    the number 0 means an empty parking space. Only one car can be moved at a
+    time to the empty slot.
+    This functions can rearrange cars from inital state of parking lot to
+    desired state of parking lot.
+
+    Input:
+        initalState:  list of integers, a permutation of the numbers 0 to N.
+                      Inital state of parking lot.
+        desiredState: list of integers, a permutation of the numbers 0 to N.
+                      State of parking lot that we want to get by moving cars.
+        toPrint:      a boolean, True if function should print the sequence of
+                      moves from initalState to desiredState,
+                      and False otherwise.
+
+    Return:
+        list of Move, sequence of moves from state initalState
+        to state desiredState.
+    """
+    slotNums = len(initalState)
     car2slot = [0] * slotNums
+
+    # create a set of cars that stand on wrong slot, comparing to desiredState
+    # and create map car2slot
     wrongCars = set()
-    for i in range(slotNums):
-        if startPositions[i] and startPositions[i] != endPositions[i]:
-            wrongCars.add(startPositions[i])
-        car2slot[startPositions[i]] = i
-    curPositions = startPositions
-    stepsNum = 0
+    for pos in range(slotNums):
+        # first condition skips 0 because it isn't a car
+        if initalState[pos] and initalState[pos] != desiredState[pos]:
+            wrongCars.add(initalState[pos])
+        car2slot[initalState[pos]] = pos
+
+    currentState = initalState
+    moves = list()
+
+    # while we have at least one car that stands on a wrong position
     while wrongCars:
-        stepsNum += 1
         zeroPos = car2slot[0]
-        if endPositions[zeroPos] == 0:
+
+        # choose a car that we will move at this step
+        if desiredState[zeroPos] == 0:
+            # Positions of empty slots match with each other. In that case, we
+            # can pick up any wrong car. But we wont fix its position, so we
+            # need to return it to the set
             car = wrongCars.pop()
             wrongCars.add(car)
         else:
-            car = endPositions[zeroPos]
+            # everything is okey, so we can move a car that should stay at
+            # zeroPos in desiredState
+            car = desiredState[zeroPos]
             wrongCars.remove(car)
+
+        # move chosen car
         carPos = car2slot[car]
-        print("move from {} to {}".format(carPos, zeroPos))
-        curPositions[carPos] = 0
-        curPositions[zeroPos] = car
+        currentState[carPos] = 0
+        currentState[zeroPos] = car
         car2slot[car] = zeroPos
         car2slot[0] = carPos
-    if curPositions != endPositions:
-        raise Exception("Wrong answer!")
-    print("{} moves in total".format(stepsNum))
-    return stepsNum
+        moves.append(Move(carPos, zeroPos))
 
-rearrangingCars([1, 2, 0, 3], [3, 1, 2, 0])
-print()
-rearrangingCars([1, 2, 3, 0], [3, 1, 2, 0])
+    # in case our algorithm is wrong
+    if currentState != desiredState:
+        raise Exception("Wrong answer!")
+
+    if toPrint:
+        for m in moves:
+            print(m)
+        print("{} moves in total.".format(len(moves)))
+
+    return moves
