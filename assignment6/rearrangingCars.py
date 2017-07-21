@@ -2,16 +2,17 @@ class Move:
     """
     Class that stores data about movement between two slots.
     """
-    def __init__(self, _from, _to):
-        self._from = _from
-        self._to = _to
+    def __init__(self, origin, destination):
+        self.origin = origin
+        self.destination = destination
 
     def __eq__(self, other):
-        return self._from == other._from and self._to == other._to
+        return (self.origin == other.origin and
+                self.destination == other.destination)
 
     def __str__(self):
-        return "Move the car from slot {} to splot {}.".format(self._from,
-                                                                self._to)
+        return "Move the car from slot {} to slot {}.".format(self.origin,
+                                                            self.destination)
 
 
 def rearrangingCars(initalState, desiredState, toPrint = False):
@@ -24,9 +25,9 @@ def rearrangingCars(initalState, desiredState, toPrint = False):
     desired state of parking lot.
 
     Input:
-        initalState:  list of integers, a permutation of the numbers 0 to N.
+        initalState:  list of integers, a permutation of the numbers 0 to N-1.
                       Inital state of parking lot.
-        desiredState: list of integers, a permutation of the numbers 0 to N.
+        desiredState: list of integers, a permutation of the numbers 0 to N-1.
                       State of parking lot that we want to get by moving cars.
         toPrint:      a boolean, True if function should print the sequence of
                       moves from initalState to desiredState,
@@ -36,6 +37,7 @@ def rearrangingCars(initalState, desiredState, toPrint = False):
         list of Move, sequence of moves from state initalState
         to state desiredState.
     """
+
     slotNums = len(initalState)
     car2slot = [0] * slotNums
 
@@ -48,7 +50,8 @@ def rearrangingCars(initalState, desiredState, toPrint = False):
             wrongCars.add(initalState[pos])
         car2slot[initalState[pos]] = pos
 
-    currentState = initalState
+    # we don't need to modify initalState, so let's leave it as it is
+    currentState = initalState.copy()
     moves = list()
 
     # while we have at least one car that stands on a wrong position
@@ -70,10 +73,9 @@ def rearrangingCars(initalState, desiredState, toPrint = False):
 
         # move chosen car
         carPos = car2slot[car]
-        currentState[carPos] = 0
-        currentState[zeroPos] = car
-        car2slot[car] = zeroPos
-        car2slot[0] = carPos
+        currentState[carPos], currentState[zeroPos] = (currentState[zeroPos],
+                                                        currentState[carPos])
+        car2slot[car], car2slot[0] = car2slot[0], car2slot[car]
         moves.append(Move(carPos, zeroPos))
 
     if toPrint:
